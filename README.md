@@ -44,10 +44,14 @@
 ## 📦 Instalación
 
 ### Opción 1: Clonar el repositorio
+
 ```bash
 git clone https://github.com/Oscarr36/system-optimizer.git
 cd system-optimizer
+```
+
 ### Opción 2: Descarga directa
+
 Descarga el archivo `Optimizador.bat` desde la sección [Releases](https://github.com/Oscarr36/system-optimizer/releases) o directamente desde el repositorio.
 
 ---
@@ -63,6 +67,7 @@ Descarga el archivo `Optimizador.bat` desde la sección [Releases](https://githu
 > ⚠️ **Importante:** el script **necesita permisos de administrador** para reparar archivos del sistema y limpiar carpetas protegidas.
 
 ### 💡 Consejo
+
 Crea un acceso directo en el escritorio con la opción "Ejecutar como administrador" siempre activada:
 
 `Propiedades` → `Acceso directo` → `Opciones avanzadas` → ✅ `Ejecutar como administrador`
@@ -127,30 +132,35 @@ Crea un acceso directo en el escritorio con la opción "Ejecutar como administra
 Sí, es seguro. Solo borra archivos temporales (Windows los regenera) y usa herramientas oficiales de Microsoft (`DISM`, `SFC`, `cleanmgr`). La papelera se vacía sin avisar, así que revísala antes de ejecutar.
 
 Si usas VPN corporativa o configuración de red especial, considera quitar los pasos de `netsh` que resetean la red.
+
 </details>
 
 <details>
 <summary><b>¿Cuánto tarda?</b></summary>
 
 Entre **5 y 30 minutos**, dependiendo del equipo. La fase de DISM + SFC es la más larga.
+
 </details>
 
 <details>
 <summary><b>¿Pierdo archivos personales?</b></summary>
 
 No. Solo se borran archivos temporales y la **papelera de reciclaje**. Mira la papelera antes de ejecutar por si tenías algo importante ahí.
+
 </details>
 
 <details>
 <summary><b>¿Hay que reiniciar?</b></summary>
 
 Recomendado. Los cambios de red (Winsock, TCP/IP) se aplican tras reiniciar. El script te pregunta al final si quieres reiniciar automáticamente.
+
 </details>
 
 <details>
 <summary><b>¿Cada cuánto debería ejecutarlo?</b></summary>
 
 Una vez al mes es más que suficiente para uso normal. Si notas el equipo lento o con problemas, también vale.
+
 </details>
 
 ---
@@ -189,4 +199,6 @@ Este proyecto está bajo la licencia MIT. Mira el archivo [LICENSE](LICENSE) par
 
 <div align="center">
 
-**Hecho con ☕ 
+**Hecho con ☕ y muchas ganas de que el PC arranque rápido**
+
+</div>
