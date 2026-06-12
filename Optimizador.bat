@@ -1,60 +1,50 @@
 @echo off
 setlocal enabledelayedexpansion
-title WinBoost v2.0 - Optimizador de Sistema
-mode con: cols=76 lines=50
-color 0A
 
 :: ====================================================================
-:: WinBoost v2.0 - Optimizador de Sistema para Windows
+:: WinBoost v2.1 - Optimizador de Sistema para Windows
 :: Autor: Oscarr36 ^ github.com/Oscarr36
 :: ====================================================================
 
-set "VERSION=2.0"
+set "VERSION=2.1"
 
-:: Timestamp para log (compatible con cualquier configuracion regional)
-for /f "tokens=2 delims==" %%I in ('wmic os get localdatetime /value') do set "DT=%%I"
-set "LOGTS=%DT:~0,8%_%DT:~8,6%"
-set "LOG_FILE=%USERPROFILE%\Desktop\WinBoost_Log_%LOGTS%.txt"
-
-:: ============================
-:: VERIFICAR ADMIN
-:: ============================
+:: ============================================================
+:: AUTO-ELEVACION: si no hay admin, pide UAC y relanza
+:: ============================================================
 net session >nul 2>&1
 if %errorLevel% neq 0 (
-    color 0C
-    cls
-    echo.
-    echo  ====================================================================
-    echo   [ERROR] Permisos insuficientes
-    echo  ====================================================================
-    echo.
-    echo   Este script necesita permisos de administrador para funcionar.
-    echo.
-    echo   Instrucciones:
-    echo     1. Cierra esta ventana
-    echo     2. Haz clic derecho sobre Optimizador.bat
-    echo     3. Selecciona "Ejecutar como administrador"
-    echo.
-    pause
-    exit /b 1
+    powershell -Command "Start-Process cmd.exe -ArgumentList '/c \"\"%~f0\"\"' -Verb RunAs"
+    exit /b 0
 )
 
-:: ============================
+:: ============================================================
+:: TIMESTAMP para log (se genera aqui, con admin ya confirmado)
+:: ============================================================
+for /f "tokens=2 delims==" %%I in ('wmic os get localdatetime /value 2^>nul') do set "DT=%%I"
+if not defined DT (
+    for /f "tokens=2 delims=T" %%I in ('powershell -NoProfile -Command "Get-Date -Format yyyyMMdd_HHmmss"') do set "DT=%%I"
+    set "LOGTS=!DT!"
+) else (
+    set "LOGTS=%DT:~0,8%_%DT:~8,6%"
+)
+set "LOG_FILE=%USERPROFILE%\Desktop\WinBoost_Log_%LOGTS%.txt"
+
+:: ============================================================
 :: BANNER
-:: ============================
+:: ============================================================
 cls
+mode con: cols=76 lines=50
+color 0A
 echo.
 echo  ####################################################################
 echo  #                                                                  #
-echo  #    _  _  _  _  _  _  _  _  _  _  _  _  _  _  _  _  _  _  _    #
-echo  #                                                                  #
 echo  #    __        ___       ____                  _                   #
-echo  #    \ \      / (_)_ __ | __ )  ___   ___  ___| |_                 #
-echo  #     \ \ /\ / /| ^| '_ \^|  _ \ / _ \ / _ \/ __^| __^|               #
-echo  #      \ V  V / ^| ^| ^| ^| ^| ^|_) ^| (_) ^| (_) \__ \ ^|_                #
+echo  #    \ \      / ^(_^)_ __ ^| __ ^)  ___   ___  ___^| ^|_                 #
+echo  #     \ \ /\ / /^| ^|'_ \ ^|  _ \ / _ \ / _ \/ __^| __^|               #
+echo  #      \ V  V / ^| ^| ^| ^| ^| ^|_^) ^| ^(_^) ^| ^(_^) \__ \ ^|_                #
 echo  #       \_/\_/  ^|_^|_^| ^|_^|____/ \___/ \___/^|___/\__^|               #
 echo  #                                                                  #
-echo  #              S Y S T E M   O P T I M I Z E R  v2.0              #
+echo  #              S Y S T E M   O P T I M I Z E R  v2.1              #
 echo  #                   github.com/Oscarr36                            #
 echo  #                                                                  #
 echo  ####################################################################
@@ -63,18 +53,18 @@ echo                   Pulsa cualquier tecla para empezar...
 pause >nul
 cls
 
-:: ============================
+:: ============================================================
 :: INICIAR LOG
-:: ============================
+:: ============================================================
 (
 echo ====================================================================
 echo  WinBoost v%VERSION% - Log de Optimizacion
 echo ====================================================================
 ) > "%LOG_FILE%" 2>nul
 
-:: ============================
+:: ============================================================
 :: INFO DEL SISTEMA
-:: ============================
+:: ============================================================
 cls
 echo  ====================================================================
 echo                      INFORMACION DEL SISTEMA
@@ -90,10 +80,16 @@ for /f "tokens=* skip=1" %%i in ('wmic os get BuildNumber /value 2^>nul') do (
 for /f "tokens=* skip=1" %%i in ('wmic os get Version /value 2^>nul') do (
     for /f "tokens=2 delims==" %%j in ("%%i") do set "WIN_VER=%%j"
 )
-
-:: Espacio libre en C: antes
 for /f "tokens=* skip=1" %%i in ('wmic logicaldisk where "DeviceID='C:'" get FreeSpace /value 2^>nul') do (
     for /f "tokens=2 delims==" %%j in ("%%i") do set "SPACE_BEFORE=%%j"
+)
+
+:: Si wmic no funciono, usar PowerShell como fallback
+if not defined WIN_CAPTION (
+    for /f "delims=" %%i in ('powershell -NoProfile -Command "(Get-WmiObject Win32_OperatingSystem).Caption" 2^>nul') do set "WIN_CAPTION=%%i"
+)
+if not defined WIN_BUILD (
+    for /f "delims=" %%i in ('powershell -NoProfile -Command "[System.Environment]::OSVersion.Version.Build" 2^>nul') do set "WIN_BUILD=%%i"
 )
 
 set "CURRENT_BUILD=%WIN_BUILD%"
@@ -102,7 +98,7 @@ set "CURRENT_BUILD=!CURRENT_BUILD: =!"
 echo   Usuario       : %USERNAME%
 echo   Equipo        : %COMPUTERNAME%
 echo   SO             : %WIN_CAPTION%
-echo   Version/Build : %WIN_VER% (Build %WIN_BUILD%)
+echo   Version/Build : %WIN_VER% ^(Build %WIN_BUILD%^)
 echo   Arquitectura  : %PROCESSOR_ARCHITECTURE%
 echo   Fecha/Hora    : %DATE% - %TIME:~0,8%
 echo.
@@ -128,7 +124,7 @@ timeout /t 3 >nul
 cls
 echo.
 echo  ====================================================================
-echo   [ FASE 1/4 ]  LIMPIEZA PROFUNDA DEL SISTEMA
+echo   ^[ FASE 1/4 ^]  LIMPIEZA PROFUNDA DEL SISTEMA
 echo  ====================================================================
 echo.
 echo [FASE 1 - LIMPIEZA PROFUNDA] >> "%LOG_FILE%"
@@ -211,14 +207,14 @@ if exist "%LOCALAPPDATA%\Mozilla\Firefox\Profiles" (
 )
 echo   OK: Firefox cache >> "%LOG_FILE%"
 
-echo   [14/18] Limpiando cache de GPU (DirectX / NVIDIA / AMD)...
+echo   [14/18] Limpiando cache de GPU ^(DirectX / NVIDIA / AMD^)...
 if exist "%LOCALAPPDATA%\D3DSCache" del /q /f /s "%LOCALAPPDATA%\D3DSCache\*" >nul 2>&1
 if exist "%LOCALAPPDATA%\NVIDIA\DXCache" del /q /f /s "%LOCALAPPDATA%\NVIDIA\DXCache\*" >nul 2>&1
 if exist "%LOCALAPPDATA%\NVIDIA\GLCache" del /q /f /s "%LOCALAPPDATA%\NVIDIA\GLCache\*" >nul 2>&1
 if exist "%LOCALAPPDATA%\AMD\DXCache" del /q /f /s "%LOCALAPPDATA%\AMD\DXCache\*" >nul 2>&1
 echo   OK: GPU cache >> "%LOG_FILE%"
 
-echo   [15/18] Limpiando volcados de memoria (crash dumps)...
+echo   [15/18] Limpiando volcados de memoria ^(crash dumps^)...
 del /q /f /s "C:\Windows\Minidump\*" >nul 2>&1
 del /q /f /s "%LOCALAPPDATA%\CrashDumps\*" >nul 2>&1
 if exist "C:\Windows\memory.dmp" del /q /f "C:\Windows\memory.dmp" >nul 2>&1
@@ -255,7 +251,7 @@ timeout /t 2 >nul
 cls
 echo.
 echo  ====================================================================
-echo   [ FASE 2/4 ]  OPTIMIZACION DE RED Y RENDIMIENTO
+echo   ^[ FASE 2/4 ^]  OPTIMIZACION DE RED Y RENDIMIENTO
 echo  ====================================================================
 echo.
 echo [FASE 2 - RED Y RENDIMIENTO] >> "%LOG_FILE%"
@@ -280,7 +276,7 @@ netsh int tcp set global initialRto=2000 >nul 2>&1
 netsh int tcp set global nonsackrttresiliency=disabled >nul 2>&1
 echo   OK: TCP optimizado >> "%LOG_FILE%"
 
-echo   [5/7] Optimizando memoria virtual (gestion automatica)...
+echo   [5/7] Optimizando memoria virtual ^(gestion automatica^)...
 wmic computersystem where name="%computername%" set AutomaticManagedPagefile=True >nul 2>&1
 echo   OK: Memoria virtual >> "%LOG_FILE%"
 
@@ -304,7 +300,7 @@ timeout /t 2 >nul
 cls
 echo.
 echo  ====================================================================
-echo   [ FASE 3/4 ]  OPTIMIZACION AVANZADA DEL SISTEMA
+echo   ^[ FASE 3/4 ^]  OPTIMIZACION AVANZADA DEL SISTEMA
 echo  ====================================================================
 echo.
 echo [FASE 3 - OPTIMIZACION AVANZADA] >> "%LOG_FILE%"
@@ -323,7 +319,7 @@ powercfg /setacvalueindex SCHEME_CURRENT SUB_PROCESSOR PROCTHROTTLEMAX 100 >nul 
 powercfg /setactive SCHEME_CURRENT >nul 2>&1
 echo   OK: CPU al 100%% >> "%LOG_FILE%"
 
-echo   [3/7] Desactivando SysMain (Superfetch) para SSD...
+echo   [3/7] Desactivando SysMain ^(Superfetch^) para SSD...
 sc config SysMain start= disabled >nul 2>&1
 sc stop SysMain >nul 2>&1
 echo   OK: SysMain desactivado >> "%LOG_FILE%"
@@ -340,7 +336,7 @@ echo   [6/7] Desactivando delay de inicio de aplicaciones...
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Serialize" /v StartupDelayInMSec /t REG_DWORD /d 0 /f >nul 2>&1
 echo   OK: Delay inicio >> "%LOG_FILE%"
 
-echo   [7/7] Optimizando NTFS (acceso, 8dot3, timestamps)...
+echo   [7/7] Optimizando NTFS ^(acceso, 8dot3, timestamps^)...
 fsutil behavior set disable8dot3 1 >nul 2>&1
 fsutil behavior set disablelastaccess 1 >nul 2>&1
 echo   OK: NTFS optimizado >> "%LOG_FILE%"
@@ -355,7 +351,7 @@ timeout /t 2 >nul
 cls
 echo.
 echo  ====================================================================
-echo   [ FASE 4/4 ]  VERIFICACION Y REPARACION DE INTEGRIDAD
+echo   ^[ FASE 4/4 ^]  VERIFICACION Y REPARACION DE INTEGRIDAD
 echo  ====================================================================
 echo.
 echo   Esta fase puede tardar entre 10 y 40 minutos.
@@ -385,11 +381,11 @@ echo   Escaneando unidades... >> "%LOG_FILE%"
 for %%D in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) do (
     if exist "%%D:\sources\install.wim" (
         echo   [+] Imagen WIM encontrada: %%D:\sources\install.wim
-        set "IMG_BUILD_RAW=0"
+        set "IMG_BUILD=0"
         for /f "tokens=2 delims==" %%V in ('DISM /Get-WimInfo /WimFile:%%D:\sources\install.wim /index:1 2^>nul ^| findstr /i "ServicePackBuild"') do (
             set "IMG_BUILD_RAW=%%V"
+            set "IMG_BUILD=!IMG_BUILD_RAW: =!"
         )
-        set "IMG_BUILD=!IMG_BUILD_RAW: =!"
         if "!IMG_BUILD!"=="0" set "IMG_BUILD=!CURRENT_BUILD!"
         echo       Build detectado: !IMG_BUILD!
         if !IMG_BUILD! GEQ !BEST_BUILD! (
@@ -402,11 +398,11 @@ for %%D in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) do (
     )
     if exist "%%D:\sources\install.esd" (
         echo   [+] Imagen ESD encontrada: %%D:\sources\install.esd
-        set "IMG_BUILD_RAW=0"
+        set "IMG_BUILD=0"
         for /f "tokens=2 delims==" %%V in ('DISM /Get-WimInfo /WimFile:%%D:\sources\install.esd /index:1 2^>nul ^| findstr /i "ServicePackBuild"') do (
             set "IMG_BUILD_RAW=%%V"
+            set "IMG_BUILD=!IMG_BUILD_RAW: =!"
         )
-        set "IMG_BUILD=!IMG_BUILD_RAW: =!"
         if "!IMG_BUILD!"=="0" set "IMG_BUILD=!CURRENT_BUILD!"
         echo       Build detectado: !IMG_BUILD!
         if !IMG_BUILD! GEQ !BEST_BUILD! (
@@ -419,6 +415,10 @@ for %%D in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) do (
     )
 )
 
+echo   >> "%LOG_FILE%"
+echo   Mejor imagen local: !BEST_SOURCE! ^(Build !BEST_BUILD!^) >> "%LOG_FILE%"
+echo   >> "%LOG_FILE%"
+
 :: -- Paso 3: Reparar con la mejor fuente disponible --
 echo   [3/4] Reparando imagen del sistema...
 echo.
@@ -428,20 +428,19 @@ if defined BEST_SOURCE (
     echo   Tipo                : !BEST_TYPE!
     echo   Build               : !BEST_BUILD!
     echo.
-    echo   Ejecutando DISM RestoreHealth con imagen local... >> "%LOG_FILE%"
-    echo   Fuente: !BEST_SOURCE! ^(!BEST_TYPE!^) Build !BEST_BUILD! >> "%LOG_FILE%"
+    echo   DISM con imagen local ^(!BEST_TYPE!^)... >> "%LOG_FILE%"
 
     DISM /Online /Cleanup-Image /RestoreHealth /Source:!BEST_TYPE!:"!BEST_SOURCE!":1 /LimitAccess >> "%LOG_FILE%" 2>&1
 
     if errorlevel 1 (
         echo.
-        echo   [!] Fallo con imagen local. Intentando sin /LimitAccess...
-        echo   Reintento sin /LimitAccess (Windows Update + local)... >> "%LOG_FILE%"
+        echo   [!] Fallo con imagen local. Reintentando sin /LimitAccess...
+        echo   Reintento sin LimitAccess... >> "%LOG_FILE%"
         DISM /Online /Cleanup-Image /RestoreHealth /Source:!BEST_TYPE!:"!BEST_SOURCE!":1 >> "%LOG_FILE%" 2>&1
 
         if errorlevel 1 (
-            echo   [!] Fallo segundo intento. Usando solo Windows Update...
-            echo   Usando solo Windows Update como ultimo recurso... >> "%LOG_FILE%"
+            echo   [!] Fallo segundo intento. Usando Windows Update...
+            echo   Usando Windows Update como ultimo recurso... >> "%LOG_FILE%"
             DISM /Online /Cleanup-Image /RestoreHealth >> "%LOG_FILE%" 2>&1
             if errorlevel 1 (
                 echo   [!] DISM reporto errores. Revisa el log: %LOG_FILE%
@@ -451,7 +450,7 @@ if defined BEST_SOURCE (
                 echo   DISM OK via Windows Update. >> "%LOG_FILE%"
             )
         ) else (
-            echo   [OK] Imagen reparada con fuente local.
+            echo   [OK] Imagen reparada.
             echo   DISM OK con imagen local. >> "%LOG_FILE%"
         )
     ) else (
@@ -460,22 +459,21 @@ if defined BEST_SOURCE (
     )
 ) else (
     echo   No se encontro imagen local en ninguna unidad.
-    echo   Consejo: monta el ISO de Windows para mayor velocidad y fiabilidad.
+    echo   Tip: monta el ISO de Windows para mayor velocidad y fiabilidad.
     echo.
-    echo   Usando Windows Update como fuente de reparacion...
-    echo   DISM Source: Windows Update (sin imagen local disponible) >> "%LOG_FILE%"
+    echo   DISM Source: Windows Update ^(sin imagen local^) >> "%LOG_FILE%"
     DISM /Online /Cleanup-Image /RestoreHealth >> "%LOG_FILE%" 2>&1
     if errorlevel 1 (
         echo   [!] DISM reporto errores. Revisa el log: %LOG_FILE%
         echo   DISM fallo. >> "%LOG_FILE%"
     ) else (
-        echo   [OK] Imagen reparada.
+        echo   [OK] Imagen reparada via Windows Update.
         echo   DISM OK. >> "%LOG_FILE%"
     )
 )
 
 echo.
-echo   Limpiando componentes obsoletos del sistema (ResetBase)...
+echo   Limpiando componentes obsoletos ^(ResetBase^)...
 echo   DISM StartComponentCleanup /ResetBase... >> "%LOG_FILE%"
 DISM /Online /Cleanup-Image /StartComponentCleanup /ResetBase >> "%LOG_FILE%" 2>&1
 echo   OK: Componentes limpiados. >> "%LOG_FILE%"
@@ -483,7 +481,7 @@ echo   OK: Componentes limpiados. >> "%LOG_FILE%"
 :: -- Paso 4: SFC --
 echo.
 echo   [4/4] Verificando archivos del sistema con SFC...
-echo   Ejecutando SFC /scannow... >> "%LOG_FILE%"
+echo   SFC /scannow... >> "%LOG_FILE%"
 sfc /scannow >> "%LOG_FILE%" 2>&1
 echo   SFC completado. >> "%LOG_FILE%"
 
@@ -499,13 +497,9 @@ for /f "tokens=* skip=1" %%i in ('wmic logicaldisk where "DeviceID='C:'" get Fre
 
 set "SPACE_DIFF=N/D"
 if defined SPACE_BEFORE if defined SPACE_AFTER (
-    set /a "DIFF_MB=(!SPACE_AFTER:~0,9! - !SPACE_BEFORE:~0,9!) / 1048576" >nul 2>&1
-    if !DIFF_MB! GTR 0 (
-        set "SPACE_DIFF=+!DIFF_MB! MB liberados"
-    ) else (
-        set /a "DIFF_MB_ABS=(!SPACE_BEFORE:~0,9! - !SPACE_AFTER:~0,9!) / 1048576" >nul 2>&1
-        set "SPACE_DIFF=Uso neto de la sesion: !DIFF_MB_ABS! MB"
-    )
+    powershell -NoProfile -Command "Write-Host ('Diferencia: +{0:N0} MB liberados' -f (([long]%SPACE_AFTER% - [long]%SPACE_BEFORE%) / 1MB))" 2>nul > "%TEMP%\wb_diff.txt"
+    for /f "delims=" %%R in ("%TEMP%\wb_diff.txt") do set "SPACE_DIFF=%%R"
+    del /q "%TEMP%\wb_diff.txt" >nul 2>&1
 )
 
 (
@@ -515,7 +509,7 @@ echo  RESUMEN FINAL
 echo ====================================================================
 echo  Espacio libre antes : %SPACE_BEFORE% bytes
 echo  Espacio libre despues: %SPACE_AFTER% bytes
-echo  Diferencia: %SPACE_DIFF%
+echo  %SPACE_DIFF%
 echo ====================================================================
 ) >> "%LOG_FILE%" 2>nul
 
@@ -532,16 +526,16 @@ echo  ####################################################################
 echo.
 echo   Las 4 fases se ejecutaron correctamente:
 echo.
-echo   [FASE 1]  Limpieza profunda  ^(18 pasos^)              [OK]
-echo   [FASE 2]  Red y rendimiento  ^(7 pasos^)               [OK]
-echo   [FASE 3]  Optimizacion avanzada  ^(7 pasos^)           [OK]
-echo   [FASE 4]  Verificacion de integridad  ^(DISM + SFC^)   [OK]
+echo   ^[FASE 1^]  Limpieza profunda  ^(18 pasos^)              [OK]
+echo   ^[FASE 2^]  Red y rendimiento  ^(7 pasos^)               [OK]
+echo   ^[FASE 3^]  Optimizacion avanzada  ^(7 pasos^)           [OK]
+echo   ^[FASE 4^]  Verificacion de integridad  ^(DISM + SFC^)   [OK]
 echo.
 echo  --------------------------------------------------------------------
 echo.
 echo   Espacio libre antes  : %SPACE_BEFORE% bytes
 echo   Espacio libre despues : %SPACE_AFTER% bytes
-echo   Diferencia            : %SPACE_DIFF%
+echo   %SPACE_DIFF%
 echo.
 echo   Log guardado en: %LOG_FILE%
 echo.
@@ -559,7 +553,7 @@ choice /C SN /M "  Quieres reiniciar el equipo ahora"
 if errorlevel 2 goto :fin
 if errorlevel 1 (
     echo.
-    echo   Reiniciando en 15 segundos... (Ctrl+C para cancelar)
+    echo   Reiniciando en 15 segundos... ^(Ctrl+C para cancelar^)
     shutdown /r /t 15 /c "WinBoost v%VERSION%: Reiniciando para aplicar optimizaciones"
 )
 

@@ -1,0 +1,513 @@
+<!--
+  ╔══════════════════════════════════════════════════════════════════════╗
+  ║  READMEAI v2.4 — AI-TO-AI PROJECT CONTEXT FILE                     ║
+  ║  Written by AI. Read by AI. Zero human dependency.                 ║
+  ║  Purpose: eliminate project re-scanning, enforce structure,        ║
+  ║  maintain code quality, security, and semantic consistency.        ║
+  ║  Made by: Oscarr36                                                 ║
+  ╚══════════════════════════════════════════════════════════════════════╝
+-->
+
+# .readmeAI
+
+---
+
+## ⚙️ AI PROTOCOL — AUTO-READ AT SESSION START
+
+> **🚨 MANDATORY: Read this file at the very start of EVERY session. Do NOT wait for the user to ask. Do NOT skip. Do NOT assume context from memory. This is your first and only mandatory action.**
+
+### Auto-read rule — highest priority, never negotiable
+- **Read this file BEFORE the user types anything.** If a session starts and this file exists at the project root, read it immediately and completely.
+- **Cold start = full read.** If this is a new instance with no session history, read the entire file before responding.
+- **Hot start = full read.** Even if you remember the project from a prior session, read the file again — it may have changed.
+- **Do not scan the filesystem first.** Read this file first. It replaces filesystem scanning.
+
+### Token efficiency rules
+- **If STRUCTURE MAP and SYMBOL INDEX are filled: do NOT scan the filesystem.** Use them to navigate directly.
+- **Never read a file you don't need.** Look up the exact location in SYMBOL INDEX first.
+- **Never re-infer what is already recorded here.** Trust stack, architecture, and conventions as written.
+
+### Session start sequence
+1. Auto-read this file — no user prompt needed.
+2. Load CURRENT SESSION STATE. Resume without asking the user to recap.
+3. Verify STRUCTURE MAP against the task. Update stale entries at session end only.
+
+### Session end sequence — mandatory, silent
+1. Overwrite CURRENT SESSION STATE with live work state.
+2. Append to DECISIONS LOG any architectural or design decision made this session.
+3. Append to CHANGE LOG.
+4. Update STRUCTURE MAP for files created, moved, or deleted.
+5. Update SYMBOL INDEX for new labels, variables, or entry points.
+6. Update PROGRESS: complete tasks, add new backlog items.
+7. Update KNOWN ISSUES if any bug was found, fixed, or introduced.
+8. Append to AI NOTES any non-obvious observation made this session.
+
+### Core rules
+- **Zero dependency principle** — This file alone must be enough for any AI to continue without human input.
+- **Trust order** — Code > this file > memory.
+- **Append, never delete** — Logs are append-only.
+- **Quality gate** — Before delivering any code, run the checklist in CODE QUALITY.
+- **Scope creep guard** — Request outside current scope → record in Backlog, flag to user.
+
+---
+
+## 🧭 PROJECT CONTEXT
+
+### Purpose
+WinBoost is a Windows Batch (.bat) script that automates system cleaning, optimization, and repair in 4 sequential phases. It targets non-technical Windows users who want a one-click tool to speed up their PC, free disk space, and repair system file corruption without manually running multiple Microsoft tools.
+
+### Goals
+1. Clean all temporary files, caches, and junk from the system in a single run
+2. Optimize network stack and RAM in a safe, reversible way
+3. Apply performance tweaks (CPU plan, NTFS, startup delays) for immediate feel improvement
+4. Repair Windows integrity using DISM with the best available image source, falling back gracefully
+
+### Non-goals
+- GUI or graphical interface (stays as CLI/Batch by design)
+- Registry deep-cleaning beyond what is explicitly safe
+- Removing user programs or personal files
+- Scheduled / silent / background execution (requires explicit admin consent per run)
+- Windows 7 / 8 / 8.1 support
+
+### Target users
+Non-technical Windows 10/11 users. They double-click the file, run as admin, and wait. They do not read logs unless something breaks.
+
+### Key constraints
+| Constraint | Detail | Impact |
+|-----------|--------|--------|
+| Admin required | All phases need elevated rights | Script exits early with instructions if not admin |
+| Windows 10/11 only | Uses DISM, wevtutil, wsreset, powercfg | Do not use features absent in Win10 build 19041+ |
+| No internet required | DISM must work offline if image is mounted | Always scan drives for local install.wim/esd first |
+| No user data loss | Never touch Documents, Downloads, Desktop content | Only touch `%TEMP%`, `C:\Windows\Temp`, caches, logs |
+| Batch only | No PowerShell scripts, no third-party tools | Use `powershell -Command` inline only for one-liners |
+
+### Business / domain rules
+- The papelera (Recycle Bin) is emptied without warning — documented in README FAQ.
+- Browsers (Edge, Chrome, Firefox) are killed before cache cleaning — acceptable since script requires restart anyway.
+- SysMain (Superfetch) is disabled assuming SSD. On HDDs this reduces performance — noted in README FAQ.
+- DISM `/ResetBase` is irreversible: removes ability to uninstall Windows updates. This is intentional for space recovery.
+- TCP/IP reset (`netsh winsock reset`, `netsh int ip reset`) invalidates VPN/proxy configs — documented.
+
+### Assumptions
+- The user is on a consumer SSD-based Windows 11 machine (most common target).
+- Internet connection is available as DISM fallback if no local image is found.
+- The user will restart after the script — all instructions say to restart.
+
+---
+
+## 🧠 SKILLS & ECOSYSTEM
+
+### Active skills
+- **cli** — This is a Windows Batch CLI script. No package manager, no framework.
+- **windows-batch** — Primary language. Uses `cmd.exe` builtins, `setlocal enabledelayedexpansion`, `wmic`, `netsh`, `DISM`, `SFC`, `powercfg`, `fsutil`, `cleanmgr`, `reg`, `sc`, `wevtutil`, `shutdown`, `choice`, `timeout`.
+
+### Manual skill overrides
+```
++windows-batch
++cli
+-node-express
+-react
+-django
+-docker
+```
+
+---
+
+## 📋 PROJECT IDENTITY
+
+| Field | Value |
+|-------|-------|
+| **Name** | WinBoost |
+| **Version** | 2.0 |
+| **Phase** | `production` |
+| **Type** | CLI script / Windows utility |
+| **Primary language** | Windows Batch (.bat) |
+| **Secondary languages** | PowerShell (inline one-liners only) |
+| **Repository** | https://github.com/Oscarr36/WinBoost |
+| **Deployment target** | Local execution on Windows 10/11 |
+| **Last updated** | 2026-06-12 |
+| **Updated by** | AI (Claude Sonnet 4.6) |
+
+---
+
+## 🛠 TECH STACK
+
+| Layer | Technology | Version | Notes |
+|-------|-----------|---------|-------|
+| Runtime | cmd.exe | Windows 10/11 | Requires `setlocal enabledelayedexpansion` |
+| System tools | DISM | Built-in | Used for image scan, repair, and cleanup |
+| System tools | SFC | Built-in | File integrity verification |
+| System tools | netsh | Built-in | Network stack reset and optimization |
+| System tools | powercfg | Built-in | Power plan management |
+| System tools | wmic | Built-in | System info queries, pagefile management |
+| System tools | cleanmgr | Built-in | Disk cleanup via registry StateFlags |
+| System tools | wevtutil | Built-in | Event log clearing |
+| System tools | fsutil | Built-in | NTFS behavior, TRIM |
+| System tools | reg | Built-in | Registry modifications |
+| System tools | sc | Built-in | Service control (SysMain) |
+| Inline scripting | PowerShell | 5.1+ | One-liners via `powershell -NoProfile -NonInteractive -Command` |
+| Package manager | None | — | No dependencies |
+| CI/CD | None | — | Manual releases on GitHub |
+
+---
+
+## 🏗 STRUCTURE MAP
+
+### Actual file tree
+```
+WinBoost/
+│
+├── .readmeAI                   ← AI context index. Never move. Never delete.
+├── Optimizador.bat             ← Main script. Single entry point. All 4 phases.
+├── README.md                   ← Human-facing docs. Badges, FAQ, phase table.
+└── (LICENSE)                   ← MIT license (not yet in repo)
+```
+
+### Architecture pattern
+Single-file sequential script. All logic lives in `Optimizador.bat`. No modules, no includes, no external dependencies. Phases run top-to-bottom in a fixed order.
+
+### Enforced structure rules
+| Section | Owns | Must NOT contain |
+|---------|------|-----------------|
+| Admin check block | Permission verification, early exit | Any cleanup logic |
+| Banner block | ASCII art, version display, pause | Any system commands |
+| Log init block | `LOG_FILE` variable, initial `>` write | Phase logic |
+| System info block | `wmic` queries, variable population | Modification commands |
+| FASE 1 | File deletion, cache clearing, cleanmgr | Network commands, registry, DISM |
+| FASE 2 | DNS, Winsock, TCP/IP, RAM, TRIM | File deletion, registry optimization |
+| FASE 3 | Registry tweaks, powercfg, sc, fsutil | DISM, SFC, file deletion |
+| FASE 4 | DISM (scan → source detect → repair → cleanup), SFC | File deletion, network |
+| Final screen | Space diff display, choice, shutdown | Any repair logic |
+
+---
+
+## 🔍 SYMBOL INDEX
+
+### Entry points
+| Symbol | Location | Description |
+|--------|----------|-------------|
+| Script start | `Optimizador.bat:1` | `@echo off`, `setlocal enabledelayedexpansion`, version var |
+| Admin check | `Optimizador.bat:15` | `net session` test, early exit with instructions |
+| Phase 1 start | `Optimizador.bat` ~line 100 | `FASE 1/4 — Limpieza profunda` header |
+| Phase 2 start | `Optimizador.bat` ~line 190 | `FASE 2/4 — Red y rendimiento` header |
+| Phase 3 start | `Optimizador.bat` ~line 240 | `FASE 3/4 — Optimizacion avanzada` header |
+| Phase 4 start | `Optimizador.bat` ~line 295 | `FASE 4/4 — Integridad` header |
+| DISM source detection loop | `Optimizador.bat` ~line 320 | `for %%D in (A B C ... Z)` drive scan |
+| DISM repair logic | `Optimizador.bat` ~line 360 | Conditional `if defined BEST_SOURCE` |
+| Final screen | `Optimizador.bat` ~line 420 | Space diff calculation, `choice /C SN` |
+| `:fin` label | `Optimizador.bat` last lines | `shutdown`, `endlocal`, `exit /b 0` |
+
+### Key variables
+| Variable | Set at | Purpose |
+|----------|--------|---------|
+| `VERSION` | Line 8 | Script version string (currently `2.0`) |
+| `LOG_FILE` | Line 12 | Full path to desktop log file with timestamp |
+| `LOGTS` | Line 11 | Timestamp from `wmic os get localdatetime` for log filename |
+| `CURRENT_BUILD` | ~Line 75 | Windows build number (e.g. `22621`) for DISM comparison |
+| `WIN_CAPTION` | ~Line 65 | Full OS name string from wmic |
+| `WIN_BUILD` | ~Line 68 | Windows build number raw |
+| `WIN_VER` | ~Line 71 | Windows version string |
+| `SPACE_BEFORE` | ~Line 74 | Free bytes on C: before cleaning (for diff) |
+| `SPACE_AFTER` | ~Line 415 | Free bytes on C: after all phases |
+| `BEST_SOURCE` | ~Line 315 | Path to best install.wim or install.esd found |
+| `BEST_BUILD` | ~Line 316 | Build number of best image found (0 if none) |
+| `BEST_TYPE` | ~Line 317 | `wim` or `esd` — type of best image |
+
+---
+
+## 📐 CONVENTIONS
+
+### Batch script conventions
+| Element | Convention | Example |
+|---------|-----------|---------|
+| Phase headers | `echo  ====...====` then `echo   [ FASE N/4 ]  TITLE` | See any phase start |
+| Step counters | `echo   [NN/TT] Description...` | `[01/18]`, `[2/7]` |
+| Log entries | `echo   OK: description >> "%LOG_FILE%"` | After each step |
+| Variables | ALL_CAPS with underscores | `WIN_BUILD`, `BEST_SOURCE` |
+| Error suppression | `>nul 2>&1` on all system commands | Every `del`, `rd`, `reg`, `sc` |
+| Log redirection | `>> "%LOG_FILE%" 2>&1` for verbose tools | DISM, SFC |
+| Delayed expansion | `!VAR!` inside `for` loops and `if` blocks | All loop variable reads |
+| Fallback pattern | Try best → try alt → log failure | DISM source selection |
+| Section comments | `:: ====` header, `:: ----` subsection | See FASE 4 subsections |
+
+### Phase order — NEVER change without updating README
+1. FASE 1 — Limpieza profunda (file/cache deletion)
+2. FASE 2 — Red y rendimiento (network, RAM, TRIM)
+3. FASE 3 — Optimizacion avanzada (registry, CPU, services)
+4. FASE 4 — Integridad (DISM, SFC) — ALWAYS LAST
+
+### DISM source priority — enforced
+1. Local `install.wim` with highest build number
+2. Local `install.esd` with highest build number
+3. Windows Update (no `/LimitAccess`)
+4. Log failure if all fail
+
+### Log format
+- File created with `>` on init (overwrites any previous log with same timestamp — impossible collision)
+- All subsequent writes use `>>`
+- Format: plain text, no XML/JSON — human readable
+- Location: `%USERPROFILE%\Desktop\WinBoost_Log_YYYYMMDD_HHMMSS.txt`
+
+---
+
+## ✅ CODE QUALITY
+
+### Pre-output checklist for Batch code
+- [ ] All `del`, `rd`, `reg`, `sc`, `net` commands end with `>nul 2>&1`
+- [ ] Verbose tools (DISM, SFC) redirect with `>> "%LOG_FILE%" 2>&1`
+- [ ] Each step has a corresponding `echo   OK: ... >> "%LOG_FILE%"` after it
+- [ ] Variables inside `for` loops and `if` blocks use `!VAR!` not `%VAR%`
+- [ ] All paths with spaces are quoted: `"%USERPROFILE%\..."`
+- [ ] New steps added to the correct phase (see Enforced structure rules)
+- [ ] Step counter `[NN/TT]` updated when adding steps to a phase
+- [ ] README phase table updated when step count changes
+- [ ] No interactive commands (`pause` is only at banner and final screen)
+- [ ] Admin check at the top, not inline
+
+### Forbidden patterns
+- `del /s C:\` or `rd /s C:\` without specific subfolder — catastrophic
+- `reg delete HKLM\...` without `>nul 2>&1` — shows ugly error on failure
+- `wmic` without `2>nul` — can error on some configurations
+- Hardcoded drive letters for user data (use `%USERPROFILE%`, `%LOCALAPPDATA%`, `%TEMP%`)
+- Direct output to console from DISM/SFC without also writing to log
+- `goto` labels except `:fin` (avoid spaghetti flow)
+- Sleeping with `timeout` inside a phase for more than 2 seconds
+- Any command that could delete from `%USERPROFILE%\Documents`, `\Desktop`, `\Downloads`
+
+---
+
+## 🔐 SECURITY
+
+### Attack surface
+| Surface | Risk | Mitigation |
+|---------|------|-----------|
+| Admin privilege | Script runs with SYSTEM-level power | Admin check is the first thing the script does |
+| Path injection via env vars | `%TEMP%`, `%LOCALAPPDATA%` could be tampered | Quotes around all env var paths |
+| DISM source path | User-mounted ISO could be malicious | Only reading standard `sources\install.wim` path; never executing from image |
+| Shutdown command | `shutdown /r` at end | User must confirm with `choice /C SN`; defaults to No on timeout |
+| Registry writes | Modifying HKCU and HKLM keys | Only well-documented performance keys; all use `/f` flag to avoid interactive prompts |
+
+### Security forbidden patterns
+- Never delete from paths provided by the user at runtime
+- Never execute binaries found in discovered drives
+- Never pipe DISM output to `eval` or execute it
+- The DISM source is only PASSED as `/Source:` argument, never executed
+
+---
+
+## ⚡ PERFORMANCE
+
+### Script runtime targets
+| Phase | Expected time | Notes |
+|-------|-------------|-------|
+| FASE 1 | 1–5 min | Depends on disk size and browser cache |
+| FASE 2 | < 1 min | Network resets are fast |
+| FASE 3 | < 30 sec | Registry and powercfg are instant |
+| FASE 4 | 10–40 min | DISM is the bottleneck; local image is 3–5× faster |
+| Total | 15–45 min | |
+
+### Performance rules for the script itself
+- Do not add `timeout /t` inside phases except the 2s pause at phase end
+- Use `for /d %%x in (...)` to delete directory trees, not recursive `del /s` when possible
+- Prefer `wmic` for system info queries — faster than PowerShell process spawn
+- DISM ScanHealth before RestoreHealth avoids full repair if system is clean
+
+---
+
+## 🧪 TESTING STRATEGY
+
+### How to test
+- Run in a Windows 10/11 VM with admin rights
+- Check log file on Desktop after run
+- Verify each phase header appears in the log
+- Verify DISM source line shows correct image path if ISO was mounted
+- Verify `:fin` label is reached cleanly (no orphaned processes)
+
+### Test cases
+| Test | Expected |
+|------|---------|
+| Run without admin | Error screen with instructions, `exit /b 1` |
+| Run with admin, no ISO | DISM uses Windows Update |
+| Run with admin, ISO mounted | DISM uses local image, log shows path |
+| Run on system with no Chrome/Edge/Firefox | Steps skip silently, no errors |
+| Run on system with all browsers open | Browsers are killed, caches cleaned |
+
+---
+
+## 🚨 ERROR HANDLING
+
+### Error model
+- Non-critical failures (e.g. a cache folder doesn't exist): `>nul 2>&1` suppresses, step marked OK
+- DISM failure: 3-level fallback (local+LimitAccess → local without → Windows Update); log records which level succeeded
+- SFC: runs unconditionally after DISM; output goes to log
+- Admin check failure: immediate exit with user instructions
+- `choice /C SN` at end: if user presses N or times out → `:fin` label, graceful exit
+
+### Log-only failures
+DISM and SFC errors are written to the log file but do NOT interrupt the script — the script always runs to completion. The user is told to check the log if something looks wrong.
+
+---
+
+## 📦 DEPENDENCIES
+
+### Runtime dependencies (all built into Windows)
+| Tool | Min Windows version | Purpose |
+|------|-------------------|---------|
+| DISM | Windows 8+ | Image repair |
+| SFC | Windows XP+ | File verification |
+| wevtutil | Windows Vista+ | Event log management |
+| wsreset.exe | Windows 8+ | Store cache reset |
+| powercfg | Windows Vista+ | Power plan |
+| fsutil | Windows XP+ | NTFS / TRIM |
+| wmic | Windows XP (deprecated Win11 22H2+) | System info queries |
+
+> ⚠️ **wmic note**: `wmic` is deprecated on Windows 11 22H2+. If it stops working, migrate queries to `Get-CimInstance` via `powershell -Command`. The script currently uses `wmic` for `os get Caption/BuildNumber/Version` and `logicaldisk get FreeSpace`. This is the only known tech debt.
+
+### Banned tools
+| Tool | Reason | Alternative |
+|------|--------|------------|
+| Third-party cleaners (CCleaner, etc.) | Cannot distribute, unpredictable | Microsoft built-ins only |
+| `format` command | Catastrophic | Never needed |
+| `rd /s /q C:\` without subdirectory | Destroys OS | Always target specific subdirs |
+
+---
+
+## 🎯 CURRENT SESSION STATE
+
+### Active objective
+WinBoost v2.0 shipped and pushed to GitHub main. Release v2.0 created. `.readmeAI` being added.
+
+### Context
+- Repo: https://github.com/Oscarr36/WinBoost
+- Local clone: `C:\Users\blasc\WinBoost_temp\`
+- Branch: `main`
+- v2.0 commit: `368b9c8`
+- Release: `v2.0` created at https://github.com/Oscarr36/WinBoost/releases/tag/v2.0
+
+### Last action taken
+Created GitHub Release v2.0 with `Optimizador.bat` attached as release asset. Writing `.readmeAI` now.
+
+### Next immediate step
+Commit `.readmeAI` to main and push.
+
+### Blockers
+- None
+
+### Open questions
+- Should wmic queries be migrated to PowerShell CIM for Windows 11 22H2+ compatibility? (Backlog)
+
+---
+
+## 📚 DECISIONS LOG
+
+| Date | Decision | Alternatives considered | Rationale |
+|------|---------|------------------------|-----------|
+| 2026-06-12 | DISM scans all drive letters A-Z for install.wim/esd | Only scan D-F | Users may have ISO mounted on any letter |
+| 2026-06-12 | DISM uses highest build number image as best source | Use running OS build to filter | Higher build = more recent patches in image |
+| 2026-06-12 | DISM /ResetBase included in FASE 4 | Skip it to preserve rollback | Irreversible but recovers significant space; matches cleanup goal |
+| 2026-06-12 | SysMain disabled unconditionally | Only disable if SSD detected | Most users have SSD; complexity of detection not worth it; README explains HDD exception |
+| 2026-06-12 | Log file goes to Desktop | AppData, temp, custom path | Desktop is always visible; users find it immediately |
+| 2026-06-12 | Browsers killed before cache clean | Only clean if browsers closed | Ensures cache files are not locked |
+| 2026-06-12 | wmic used for system info over PowerShell | Full PowerShell script | Faster process startup; wmic built into cmd.exe session |
+
+---
+
+## 🐛 KNOWN ISSUES
+
+| ID | Status | Description | Workaround | Root cause |
+|----|--------|-------------|-----------|------------|
+| 001 | `open` | `wmic` deprecated in Win11 22H2+ may fail in future builds | Script still works in 22H2/23H2/24H2 as of 2026-06 | Microsoft deprecating WBEM CLI |
+| 002 | `open` | Space diff calculation truncates numbers with `!VAR:~0,9!` — inaccurate on drives > 1 TB | Cosmetic only; does not affect cleaning | Batch integer overflow with >10-digit numbers |
+| 003 | `open` | `wsreset.exe` opens a Store window briefly | Window closes automatically | wsreset design |
+
+### Tech debt
+- Migrate `wmic` queries to `Get-CimInstance` wrapped in `powershell -Command` for long-term Win11 compatibility.
+- Space diff math should use PowerShell integer arithmetic instead of Batch set /a with truncation.
+
+---
+
+## ✅ PROGRESS
+
+### Completed
+- [x] 2026-06-12 — v1.0: Initial 3-phase script (Limpieza 8 pasos, Red, Integridad)
+- [x] 2026-06-12 — v2.0: Full rewrite — 4 phases, 18-step cleanup, browser caches, GPU cache, DISM intelligent source detection, log file, space diff, advanced optimizations
+- [x] 2026-06-12 — README v2.0: v1 vs v2 comparison table, full phase documentation, updated FAQ
+- [x] 2026-06-12 — GitHub Release v2.0 created with Optimizador.bat asset
+- [x] 2026-06-12 — .readmeAI created and populated for WinBoost
+
+### In Progress
+- Adding .readmeAI to repo
+
+### Backlog
+- Migrate wmic to Get-CimInstance for Win11 22H2+ future-proofing
+- Fix space diff math for drives > 1 TB
+- Consider adding a `-phase N` argument for running individual phases
+- Add LICENSE file (MIT) to repo
+- Consider GitHub Actions workflow to validate .bat syntax on PR
+
+---
+
+## 🔗 CROSS-PROJECT REFERENCES
+
+| Alias | Location | Relationship | Last sync |
+|-------|----------|-------------|-----------|
+| ReadMeAI | https://github.com/Oscarr36/ReadMeAI | Template source for this .readmeAI | 2026-06-12 |
+
+---
+
+## 🔧 ENVIRONMENT
+
+| Tool | Version | Purpose | Config location |
+|------|---------|---------|----------------|
+| Windows 10/11 | 19041+ | Target OS and runtime | — |
+| cmd.exe | Built-in | Script interpreter | — |
+| PowerShell | 5.1+ | Inline one-liners | — |
+| Git | Any | Version control | `.git/` |
+| gh CLI | Any | GitHub releases | — |
+
+### Setup sequence
+```
+1. Clone repo: git clone https://github.com/Oscarr36/WinBoost.git
+2. Right-click Optimizador.bat → Run as administrator
+3. (Optional) Mount Windows ISO before running for faster DISM repair
+```
+
+### Common commands
+| Command | What it does |
+|---------|-------------|
+| Right-click → Run as administrator | Execute the optimizer |
+| `gh release create vX.Y Optimizador.bat` | Create new GitHub release |
+| `git add . && git commit && git push` | Push changes to main |
+
+---
+
+## 🗒 AI NOTES
+
+_Newest entries first._
+
+2026-06-12 — The DISM source detection loop iterates ALL 26 drive letters (A-Z). This is intentional — users mount ISOs on unpredictable letters (sometimes Z:, sometimes D:). The loop takes milliseconds even with 26 iterations since most `if exist` checks fail fast on non-existent paths.
+
+2026-06-12 — `setlocal enabledelayedexpansion` is critical for the DISM source detection. Without it, `!BEST_SOURCE!` inside the `for` loop would expand to empty string. Never remove this from line 2 of the script.
+
+2026-06-12 — The `wmic os get localdatetime` for the log timestamp returns a 14-character string like `20260612153045`. The `%DT:~0,8%_%DT:~8,6%` syntax slices it to `20260612_153045`. This is locale-independent — unlike `%DATE%` which varies by Windows region settings.
+
+2026-06-12 — `DISM /StartComponentCleanup /ResetBase` is irreversible. It removes the ability to uninstall Windows updates. This was a deliberate v2.0 decision to maximize space recovery. Do not make this optional without a clear user warning.
+
+2026-06-12 — The `explorer.exe` kill + restart in step 5 of FASE 1 is needed to unlock `thumbcache_*.db` files. Without it, the delete silently fails. The Explorer restart is fast but may briefly flash the desktop.
+
+---
+
+## 📜 CHANGE LOG
+
+| Date | Actor | Summary |
+|------|-------|---------|
+| 2026-06-12 | AI (Claude Sonnet 4.6) | Created .readmeAI v1.0 with full WinBoost context |
+| 2026-06-12 | AI (Claude Sonnet 4.6) | v2.0 rewrite: 4 phases, 18-step cleanup, DISM intelligent, log, space diff, optimizations |
+| 2026-06-12 | Oscarr36 | v1.0 initial release: 3-phase optimizer |
+
+---
+
+<!--
+  READMEAI v2.4 — FIRST-TIME SETUP GUIDE FOR AI AGENTS
+  This file is already filled. Skip setup. Go directly to CURRENT SESSION STATE.
+-->
