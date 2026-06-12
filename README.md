@@ -1,15 +1,16 @@
 <div align="center">
 
-# 🚀 System Optimizer
+# ⚡ WinBoost
 
-### Script de optimización y limpieza para Windows
+### Optimizador, limpiador y reparador de Windows en un solo clic
 
 [![Windows](https://img.shields.io/badge/Windows-10%20%7C%2011-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://www.microsoft.com/windows)
 [![Batch](https://img.shields.io/badge/Batch-Script-4D4D4D?style=for-the-badge&logo=windows-terminal&logoColor=white)](https://en.wikipedia.org/wiki/Batch_file)
+[![Version](https://img.shields.io/badge/Version-2.0-blue?style=for-the-badge)]()
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 [![Maintained](https://img.shields.io/badge/Maintained-Yes-brightgreen?style=for-the-badge)]()
 
-**Limpia, optimiza y repara tu Windows en un solo clic.**
+**Limpia, optimiza y repara tu Windows en 4 fases automatizadas.**
 
 [Características](#-características) •
 [Instalación](#-instalación) •
@@ -23,21 +24,42 @@
 
 ## 📋 Descripción
 
-**System Optimizer** es un script `.bat` para Windows que automatiza la limpieza y optimización del sistema en **3 fases**: limpieza de archivos, optimización de red y verificación de integridad. Pensado para esos momentos en los que el PC va lento al arrancar y no quieres pelearte con menús.
+**WinBoost** es un script `.bat` para Windows que automatiza la limpieza, optimización y reparación del sistema en **4 fases completas**: limpieza profunda, red y rendimiento, optimización avanzada, y verificación de integridad con DISM inteligente.
 
-> ⚡ **Resultado:** equipo más rápido, menos archivos basura y sistema verificado en pocos minutos.
+> ⚡ **Resultado:** equipo más rápido, varios GB liberados, sistema reparado y verificado — todo sin tocar nada.
+
+### ¿Qué lo diferencia de la v1?
+
+| Característica | v1 | v2 |
+|---|---|---|
+| Fases | 3 | **4** |
+| Pasos de limpieza | 8 | **18** |
+| Limpieza de navegadores | ❌ | ✅ Edge, Chrome, Firefox |
+| Cache GPU | ❌ | ✅ DirectX, NVIDIA, AMD |
+| DISM con imagen local | ❌ | ✅ Auto-detecta la mejor |
+| DISM ScanHealth previo | ❌ | ✅ |
+| DISM ResetBase | ❌ | ✅ |
+| Log de sesion | ❌ | ✅ Guardado en el Escritorio |
+| Espacio antes/despues | ❌ | ✅ |
+| Optimizacion de CPU | ❌ | ✅ |
+| Plan de energia | ❌ | ✅ Alto rendimiento |
+| NTFS optimizado | ❌ | ✅ |
+| TRIM para SSD | ❌ | ✅ |
+| TCP/IP avanzado | Basico | ✅ Completo |
+| Volcados de memoria | ❌ | ✅ |
+| Defender cache | ❌ | ✅ |
 
 ---
 
 ## ✨ Características
 
-- 🧹 **Limpieza profunda** — temporales, prefetch, papelera, caché de miniaturas y logs
-- 🌐 **Optimización de red** — flush DNS, reset de Winsock y pila TCP/IP
-- 🛡️ **Verificación de integridad** — DISM + SFC para reparar archivos del sistema
-- 🎨 **Interfaz visual** — banner ASCII, fases numeradas y feedback en tiempo real
-- 🔒 **Comprobación de admin** — avisa si te falta permisos antes de ejecutar
-- ♻️ **Reinicio opcional** — al terminar te pregunta si quieres reiniciar
-- 📊 **Info del sistema** — muestra usuario, equipo y SO al arrancar
+- 🧹 **Limpieza profunda (18 pasos)** — temporales, prefetch, papelera, miniaturas, logs, Windows Update, Store, navegadores, GPU, crash dumps y más
+- 🌐 **Red y rendimiento** — flush DNS, reset Winsock, TCP/IP optimizado, TRIM SSD, RAM
+- ⚙️ **Optimización avanzada** — plan de energía alto rendimiento, CPU al 100%, SysMain desactivado, NTFS, delays de inicio
+- 🛡️ **DISM inteligente** — escanea todas las unidades, detecta automáticamente la imagen de Windows más reciente disponible y la usa como fuente, con 3 niveles de fallback
+- 📊 **Log completo** — guarda un `.txt` en el Escritorio con todo lo ejecutado y el espacio antes/después
+- 🔒 **Verificación de admin** — instrucciones claras si falta permisos
+- ♻️ **Reinicio opcional** — te pregunta al terminar
 
 ---
 
@@ -46,13 +68,13 @@
 ### Opción 1: Clonar el repositorio
 
 ```bash
-git clone https://github.com/Oscarr36/system-optimizer.git
-cd system-optimizer
+git clone https://github.com/Oscarr36/WinBoost.git
+cd WinBoost
 ```
 
 ### Opción 2: Descarga directa
 
-Descarga el archivo `Optimizador.bat` desde la sección [Releases](https://github.com/Oscarr36/system-optimizer/releases) o directamente desde el repositorio.
+Descarga `Optimizador.bat` desde la sección [Releases](https://github.com/Oscarr36/WinBoost/releases) o directamente desde el repositorio.
 
 ---
 
@@ -61,23 +83,23 @@ Descarga el archivo `Optimizador.bat` desde la sección [Releases](https://githu
 1. **Clic derecho** sobre `Optimizador.bat`
 2. Selecciona **"Ejecutar como administrador"**
 3. Pulsa cualquier tecla para empezar
-4. Espera a que terminen las 3 fases (5-30 min según el equipo)
+4. Espera a que terminen las 4 fases *(10–40 min según el equipo)*
 5. Reinicia cuando te lo pida
 
-> ⚠️ **Importante:** el script **necesita permisos de administrador** para reparar archivos del sistema y limpiar carpetas protegidas.
+> ⚠️ **Importante:** necesita **permisos de administrador** para reparar archivos del sistema y limpiar carpetas protegidas.
 
-### 💡 Consejo
+### 💡 Consejo: DISM más rápido y fiable
 
-Crea un acceso directo en el escritorio con la opción "Ejecutar como administrador" siempre activada:
+Si tienes el ISO de Windows montado o un DVD insertado, el DISM usará automáticamente esa imagen local en lugar de descargar de Windows Update — mucho más rápido y funciona sin internet.
 
-`Propiedades` → `Acceso directo` → `Opciones avanzadas` → ✅ `Ejecutar como administrador`
+El script escanea todas las letras de unidad y **elige automáticamente la imagen con el build más alto** (más actualizada).
 
 ---
 
 ## 🔧 Qué hace el script
 
 <details>
-<summary><b>🧹 FASE 1 — Limpieza del sistema</b></summary>
+<summary><b>🧹 FASE 1 — Limpieza profunda (18 pasos)</b></summary>
 
 | Paso | Acción |
 |------|--------|
@@ -85,32 +107,66 @@ Crea un acceso directo en el escritorio con la opción "Ejecutar como administra
 | 2 | Limpia temporales de Windows (`C:\Windows\Temp`) |
 | 3 | Borra caché de Prefetch |
 | 4 | Vacía la papelera de reciclaje |
-| 5 | Limpia caché de miniaturas |
-| 6 | Borra logs antiguos del sistema |
-| 7 | Limpia descargas pendientes de Windows Update |
-| 8 | Ejecuta limpieza de disco de Windows |
+| 5 | Limpia caché de miniaturas (reinicia Explorer) |
+| 6 | Borra logs CBS del sistema |
+| 7 | Limpia caché de Windows Update (para y reinicia el servicio) |
+| 8 | Borra registros de eventos de Windows |
+| 9 | Limpia caché de fuentes |
+| 10 | Resetea caché de Microsoft Store |
+| 11 | Limpia caché de Microsoft Edge |
+| 12 | Limpia caché de Google Chrome |
+| 13 | Limpia caché de Firefox |
+| 14 | Limpia caché GPU (DirectX Shader, NVIDIA, AMD) |
+| 15 | Elimina volcados de memoria (crash dumps) |
+| 16 | Borra archivos `.tmp` del sistema |
+| 17 | Limpia caché de Windows Defender |
+| 18 | Ejecuta `cleanmgr` automatizado con múltiples categorías |
 
 </details>
 
 <details>
-<summary><b>🌐 FASE 2 — Optimización de red y rendimiento</b></summary>
+<summary><b>🌐 FASE 2 — Red y rendimiento (7 pasos)</b></summary>
 
 | Paso | Acción |
 |------|--------|
-| 1 | Vacía la caché DNS (`ipconfig /flushdns`) |
+| 1 | Vacía la caché DNS |
 | 2 | Reinicia el catálogo Winsock |
 | 3 | Reinicia la pila TCP/IP |
-| 4 | Libera memoria RAM no utilizada |
+| 4 | Optimiza parámetros TCP (autotuning, ECN, RTT, timestamps) |
+| 5 | Activa gestión automática de memoria virtual |
+| 6 | Libera listas de espera de RAM |
+| 7 | Envía comando TRIM al SSD |
 
 </details>
 
 <details>
-<summary><b>🛡️ FASE 3 — Verificación de integridad</b></summary>
+<summary><b>⚙️ FASE 3 — Optimización avanzada (7 pasos)</b></summary>
 
 | Paso | Acción |
 |------|--------|
-| 1 | `DISM /RestoreHealth` repara la imagen del sistema |
-| 2 | `sfc /scannow` verifica y repara archivos del sistema |
+| 1 | Activa el plan de energía de **alto rendimiento** |
+| 2 | Establece el procesador al **100% mínimo/máximo** |
+| 3 | Desactiva SysMain (Superfetch) — innecesario en SSD |
+| 4 | Ajusta efectos visuales para máximo rendimiento |
+| 5 | Elimina delay del menú inicio |
+| 6 | Desactiva delay de arranque de aplicaciones |
+| 7 | Optimiza NTFS (disable8dot3, lastaccess) |
+
+</details>
+
+<details>
+<summary><b>🛡️ FASE 4 — Verificación de integridad (DISM inteligente + SFC)</b></summary>
+
+| Paso | Acción |
+|------|--------|
+| 1 | `DISM /ScanHealth` — escaneo rápido de corrupción |
+| 2 | Escaneo automático de unidades buscando `install.wim` / `install.esd` |
+| 3 | Selección de la **imagen con el build más alto** como fuente de reparación |
+| 3b | `DISM /RestoreHealth` con imagen local + `/LimitAccess` |
+| 3c | Fallback: sin `/LimitAccess` si falla el primero |
+| 3d | Fallback final: Windows Update si no hay imagen local |
+| 4 | `DISM /StartComponentCleanup /ResetBase` — elimina componentes obsoletos |
+| 5 | `sfc /scannow` — verifica y repara archivos del sistema |
 
 </details>
 
@@ -120,7 +176,7 @@ Crea un acceso directo en el escritorio con la opción "Ejecutar como administra
 
 - 🪟 Windows 10 / Windows 11
 - 🔑 Permisos de administrador
-- 📡 Conexión a internet (recomendada para DISM)
+- 📡 Conexión a internet *(recomendada para DISM si no hay imagen local)*
 
 ---
 
@@ -129,37 +185,55 @@ Crea un acceso directo en el escritorio con la opción "Ejecutar como administra
 <details>
 <summary><b>¿Es seguro? ¿Puede romper algo?</b></summary>
 
-Sí, es seguro. Solo borra archivos temporales (Windows los regenera) y usa herramientas oficiales de Microsoft (`DISM`, `SFC`, `cleanmgr`). La papelera se vacía sin avisar, así que revísala antes de ejecutar.
+Sí, es seguro. Solo borra archivos temporales y usa herramientas oficiales de Microsoft (`DISM`, `SFC`, `cleanmgr`, `netsh`, `powercfg`). La papelera se vacía sin avisar — revísala antes de ejecutar.
 
-Si usas VPN corporativa o configuración de red especial, considera quitar los pasos de `netsh` que resetean la red.
+Los cambios en el registro (efectos visuales, delays) son revertibles desde Configuración de Windows.
+
+</details>
+
+<details>
+<summary><b>¿Qué hace exactamente "DISM inteligente"?</b></summary>
+
+El script escanea **todas las letras de unidad** buscando `install.wim` o `install.esd` (imágenes de instalación de Windows, como las de un ISO montado o DVD). Compara el número de build de cada imagen encontrada y **selecciona la más reciente** para usar como fuente de reparación.
+
+Esto es más rápido y fiable que depender de Windows Update, especialmente si tienes el ISO de tu versión de Windows a mano.
+
+Si no encuentra ninguna imagen local, usa Windows Update como fallback — y si eso también falla, lo registra en el log con detalle.
 
 </details>
 
 <details>
 <summary><b>¿Cuánto tarda?</b></summary>
 
-Entre **5 y 30 minutos**, dependiendo del equipo. La fase de DISM + SFC es la más larga.
+Entre **15 y 45 minutos**, dependiendo del equipo y la conexión. La Fase 4 (DISM + SFC) es la más larga. Con una imagen local montada es considerablemente más rápida.
 
 </details>
 
 <details>
 <summary><b>¿Pierdo archivos personales?</b></summary>
 
-No. Solo se borran archivos temporales y la **papelera de reciclaje**. Mira la papelera antes de ejecutar por si tenías algo importante ahí.
+No. Solo se borran archivos temporales, caché y la papelera. Documentos, fotos y programas no se tocan. Revisa la papelera antes si tenías algo importante.
 
 </details>
 
 <details>
-<summary><b>¿Hay que reiniciar?</b></summary>
+<summary><b>¿Qué pasa si desactiva SysMain en un HDD?</b></summary>
 
-Recomendado. Los cambios de red (Winsock, TCP/IP) se aplican tras reiniciar. El script te pregunta al final si quieres reiniciar automáticamente.
+SysMain (antes Superfetch) precarga en RAM los programas más usados. En **SSD es innecesario** y consume recursos. Si usas **HDD**, puedes comentar o borrar los pasos 3 y 4 de la Fase 3 editando el `.bat` antes de ejecutarlo.
 
 </details>
 
 <details>
 <summary><b>¿Cada cuánto debería ejecutarlo?</b></summary>
 
-Una vez al mes es más que suficiente para uso normal. Si notas el equipo lento o con problemas, también vale.
+Una vez al mes para mantenimiento preventivo. Si notas el equipo lento, con errores o problemas de red, ejecútalo en cualquier momento.
+
+</details>
+
+<details>
+<summary><b>¿Dónde queda el log?</b></summary>
+
+En el **Escritorio** con el nombre `WinBoost_Log_AAAAMMDD_HHMMSS.txt`. Contiene todo lo ejecutado, resultados de DISM y SFC, la fuente usada para la reparación y el espacio libre antes/después.
 
 </details>
 
