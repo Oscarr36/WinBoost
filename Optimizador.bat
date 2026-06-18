@@ -11,21 +11,26 @@ set "VERSION=2.1"
 :: ============================================================
 :: AUTO-ELEVACION: si no hay admin, pide UAC y relanza
 :: ============================================================
-net session >nul 2>&1
-if %errorLevel% neq 0 (
-    powershell -Command "Start-Process cmd.exe -ArgumentList '/c \"\"%~f0\"\"' -Verb RunAs"
+fsutil dirty query %systemdrive% >nul 2>&1
+if %errorlevel% neq 0 (
+    echo Solicitando permisos de administrador...
+    powershell -NoProfile -Command "Start-Process -FilePath '%~f0' -Verb RunAs -WindowStyle Normal"
     exit /b 0
 )
 
 :: ============================================================
 :: TIMESTAMP para log (se genera aqui, con admin ya confirmado)
 :: ============================================================
-for /f "tokens=2 delims==" %%I in ('wmic os get localdatetime /value 2^>nul') do set "DT=%%I"
-if not defined DT (
-    for /f "tokens=2 delims=T" %%I in ('powershell -NoProfile -Command "Get-Date -Format yyyyMMdd_HHmmss"') do set "DT=%%I"
+for /f "delims=" %%I in ('powershell -NoProfile -Command "Get-Date -Format yyyyMMdd_HHmmss"') do set "DT=%%I"
+if defined DT (
     set "LOGTS=!DT!"
 ) else (
-    set "LOGTS=%DT:~0,8%_%DT:~8,6%"
+    for /f "tokens=2 delims==" %%I in ('wmic os get localdatetime /value 2^>nul') do set "DT=%%I"
+    if defined DT (
+        set "LOGTS=!DT:~0,8!_!DT:~8,6!"
+    ) else (
+        set "LOGTS=unknown"
+    )
 )
 set "LOG_FILE=%USERPROFILE%\Desktop\WinBoost_Log_%LOGTS%.txt"
 
